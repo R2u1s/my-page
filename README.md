@@ -2,7 +2,7 @@
 
 Страница обо мне. Содержит мои контакты, описание опыта и навыков
 
-![screenshot](https://github.com/R2u1s/my-page/blob/main/screen.jpg)
+![screenshot](./screen.jpg)
 
 ## Технологии
 
