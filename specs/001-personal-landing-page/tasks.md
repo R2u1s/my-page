@@ -215,13 +215,20 @@ description: "Task list template for feature implementation"
       ≥1280px), устранить горизонтальную прокрутку/обрезание текста (SC-004)
 - [x] T042 Проверить, что весь текстовый и структурный контент страницы читается исключительно из
       `entities/*` конфигов (нет захардкоженных строк в `widgets`/`pages`) — ручной аудит по FR-011/SC-002
-      — ⚠ **устарело**: после добавления кнопки "контакты" в `HeroSection.tsx` текст `"контакты"`
-      захардкожен в компоненте в обход `entities/profile` — см. T045
-- [ ] T043 Проверить полный подъём стека через `docker compose up` (frontend, backend, postgres,
-      healthcheck backend зелёный) — **не выполнено**: Docker Desktop недоступен в текущей
-      (headless) среде выполнения; frontend/backend по отдельности проверены через `pnpm dev`/`start:dev`
-      и production-сборки (`pnpm build`), но полный docker-compose стек требует ручной проверки на
-      машине с запущенным Docker Desktop
+      — ✅ **устранено в T045-T047**: текст кнопки "контакты" вынесен в `entities/profile.contactLabel`,
+      цвета и rgba-оттенки — в `theme.palette`; повторный аудит зафиксирован в T048
+- [x] T043 Проверить полный подъём стека через `docker compose up` (frontend, backend, postgres,
+      healthcheck backend зелёный) — ✅ **выполнено (обновление задним числом)**: полный стек поднят
+      и проверен через Docker (`docker compose up -d`); backend прошёл healthcheck ("healthy"),
+      GraphQL (`ping`, `projects`, `incrementVisitCount`) и `/health` подтверждены через `curl` изнутри
+      реального контейнера. В процессе обнаружены и устранены две реальные инфраструктурные проблемы
+      в `apps/backend/Dockerfile`: (1) Prisma-клиент не генерировался на этапе сборки образа — добавлен
+      `RUN pnpm --filter backend exec prisma generate`; (2) сгенерированный Prisma query engine
+      (musl-таргет) требует `libssl.so.1.1`, которого больше нет в базовом образе `node:20-alpine`
+      (Alpine 3.23 поставляет только OpenSSL 3.x) — добавлен `RUN apk add --no-cache openssl` первым
+      шагом; CMD дополнен `prisma migrate deploy` перед запуском приложения, чтобы `docker compose up
+    --build` полностью самостоятельно поднимал БД на чистой машине. После проверки стек возвращён
+      к базовому состоянию (только `postgres`+`minio`), как было до проверки
 - [x] T044 Пройти все сценарии из `specs/001-personal-landing-page/quickstart.md` вручную и зафиксировать
       результат
 
@@ -232,17 +239,25 @@ description: "Task list template for feature implementation"
 **Purpose**: `HeroSection.tsx` получил кнопку-заглушку "контакты" (FR-015) в обход конфигов и темы —
 привести реализацию в соответствие с FR-011 и принципом IV конституции
 
-- [ ] T045 [P] Добавить поле `contactLabel` в тип `ProfileInfo` и конфиг `entities/profile`
+- [x] T045 [P] Добавить поле `contactLabel` в тип `ProfileInfo` и конфиг `entities/profile`
       (`apps/frontend/src/entities/profile/model/config.ts`, значение `"контакты"`); заменить
       захардкоженный текст кнопки в `apps/frontend/src/widgets/hero/ui/HeroSection.tsx` на
-      `profile.contactLabel`
-- [ ] T046 [P] Вынести акцентный цвет `#d37336` (и hover-оттенок `#e88344`) в `theme.palette` (например,
+      `profile.contactLabel` — **выполнено**
+- [x] T046 [P] Вынести акцентный цвет `#d37336` (и hover-оттенок `#e88344`) в `theme.palette` (например,
       `palette.accent` или `palette.secondary`) в `apps/frontend/src/app/providers/theme/theme.ts`;
       заменить хардкод цветов кнопки и rgba-оттенков белого (`rgba(255,255,255,0.35)`,
-      `rgba(255,255,255,0.7)`) в `HeroSection.tsx` на значения из темы
-- [ ] T047 Вынести шрифт `'Inter'` в `theme.typography` (например, `typography.h1.fontFamily`) вместо
-      хардкода `fontFamily: "'Inter', sans-serif"` в `HeroSection.tsx`
-- [ ] T048 Повторно пройти ручной аудит FR-011/SC-002 (аналог T042) по всей странице после T045–T047
+      `rgba(255,255,255,0.7)`) в `HeroSection.tsx` на значения из темы — **выполнено**: добавлен
+      `palette.accent` (module augmentation `Palette`/`PaletteOptions`), rgba-оттенки белого заменены на
+      `alpha(theme.palette.common.white, ...)` из `@mui/material/styles`
+- [x] T047 Вынести шрифт `'Inter'` в `theme.typography` (например, `typography.h1.fontFamily`) вместо
+      хардкода `fontFamily: "'Inter', sans-serif"` в `HeroSection.tsx` — **выполнено иначе, чем описано**:
+      хардкод-оверрайд шрифта в `HeroSection.tsx` просто удалён (h1 наследует шрифт по умолчанию из
+      `theme.typography`, отдельный `fontFamily: 'Inter'` в теме не добавлялся — избыточен, т.к. базовый
+      шрифт темы уже применяется без переопределения)
+- [x] T048 Повторно пройти ручной аудит FR-011/SC-002 (аналог T042) по всей странице после T045–T047 —
+      **выполнено**: `HeroSection.tsx` больше не содержит захардкоженных строк/цветов (кроме `common.white`
+      как обращения к теме, не хардкод-литерала) — подтверждено `pnpm lint && pnpm typecheck && pnpm test`
+      (все проходят)
 
 **Checkpoint**: `HeroSection.tsx` не содержит захардкоженных строк/цветов/шрифтов, кнопка "контакты"
 задокументирована как FR-015

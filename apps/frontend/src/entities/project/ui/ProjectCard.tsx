@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardActionArea from "@mui/material/CardActionArea";
@@ -10,12 +11,15 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
-  const media = project.imageUrl && (
+  const [imageFailed, setImageFailed] = useState(false);
+
+  const media = project.imageUrl && !imageFailed && (
     <CardMedia
       component="img"
       height="320"
       image={project.imageUrl}
       alt={project.title}
+      onError={() => setImageFailed(true)}
       sx={{ objectFit: "contain" }}
     />
   );

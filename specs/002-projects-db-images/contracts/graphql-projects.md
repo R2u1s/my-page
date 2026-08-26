@@ -34,11 +34,14 @@ query Projects {
     url
     imageUrl
     isPlaceholder
+    sortOrder
   }
 }
 ```
 
-### Response — пример (после переноса данных, см. `data-model.md`)
+### Response — пример (после переноса данных, см. `data-model.md`; бакет для разработки — `my-page`, не
+
+`project-images`, см. T024 в `tasks.md`)
 
 ```json
 {
@@ -49,8 +52,9 @@ query Projects {
         "title": "Навигатор Химии",
         "description": "Портал, объединяющий химическую промышленность России...",
         "url": "https://chmtch.ru/",
-        "imageUrl": "http://localhost:9000/project-images/chmtch-screen.png",
-        "isPlaceholder": false
+        "imageUrl": "http://localhost:9000/my-page/chmtch-screen.PNG",
+        "isPlaceholder": false,
+        "sortOrder": 1
       },
       {
         "id": "placeholder",
@@ -58,7 +62,8 @@ query Projects {
         "description": "",
         "url": null,
         "imageUrl": null,
-        "isPlaceholder": true
+        "isPlaceholder": true,
+        "sortOrder": 2
       }
     ]
   }

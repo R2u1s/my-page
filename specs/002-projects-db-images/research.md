@@ -70,10 +70,11 @@ PrismaClient implements OnModuleInit`, помечен `@Global()`, подклю�
 
 ## 6. Публичный доступ к бакету и загрузка файла (ручной процесс)
 
-- **Decision**: После `docker compose up` бакет (`project-images`) и публичная политика на чтение (anonymous
-  `download`) настраиваются один раз вручную через консоль MinIO (`http://localhost:9001`) или CLI `mc`;
-  файл `chmtch-screen.PNG` загружается туда же вручную тем же способом. Итоговый URL
-  (`http://localhost:9000/project-images/chmtch-screen.png`) прописывается в сид-скрипте.
+- **Decision**: После `docker compose up` бакет (фактически создан с именем `my-page`, не `project-images`, —
+  см. `tasks.md` T024) и публичная политика на чтение (anonymous `download`) настраиваются один раз вручную
+  через консоль MinIO (`http://localhost:9001`) или CLI `mc`; файл `chmtch-screen.PNG` загружается туда же
+  вручную тем же способом (регистр расширения `.PNG` сохраняется как есть — S3-ключи регистрозависимы).
+  Итоговый URL (`http://localhost:9000/my-page/chmtch-screen.PNG`) прописывается в сид-скрипте.
 - **Rationale**: Прямое следствие FR-009 и Assumptions — встроенного интерфейса загрузки/управления файлами
   на этом этапе не существует осознанно; ровно один раз выполняемая ручная настройка дешевле, чем
   automation/init-контейнер ради одного файла.

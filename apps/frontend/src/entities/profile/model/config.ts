@@ -6,6 +6,7 @@ export interface ProfileInfo {
   profession: string;
   photoUrl: string;
   photoAlt: string;
+  contactLabel: string;
   phone: string;
   email: string;
   telegram: string;
@@ -17,6 +18,7 @@ export const profile: ProfileInfo = {
   profession: "Fullstack-разработчик",
   photoUrl: profilePhoto,
   photoAlt: "Руслан Буданов",
+  contactLabel: "контакты",
   phone: "+7 (903) 571-73-70",
   email: "budz@yandex.ru",
   telegram: "@rubudaru",

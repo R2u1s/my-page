@@ -1,4 +1,14 @@
 import { createTheme } from "@mui/material/styles";
+import type { PaletteColor, PaletteColorOptions } from "@mui/material/styles";
+
+declare module "@mui/material/styles" {
+  interface Palette {
+    accent: PaletteColor;
+  }
+  interface PaletteOptions {
+    accent?: PaletteColorOptions;
+  }
+}
 
 export const theme = createTheme({
   palette: {
@@ -9,6 +19,10 @@ export const theme = createTheme({
     },
     primary: {
       main: "#8ab4f8",
+    },
+    accent: {
+      main: "#d37336",
+      light: "#e88344",
     },
     text: {
       primary: "#f5f5f5",
