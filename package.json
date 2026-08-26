@@ -10,6 +10,8 @@
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
+    "typecheck": "pnpm -r --if-present run typecheck",
+    "test": "pnpm -r --if-present run test",
     "prepare": "husky"
   },
   "devDependencies": {
